@@ -1,11 +1,15 @@
 package se.lars.kube_test;
 
 import io.vertx.core.Vertx;
+import io.vertx.core.VertxOptions;
 
 public class Main {
 
   public static void main(String[] args) {
-    Vertx vertx = Vertx.vertx();
+    VertxOptions options = new VertxOptions().setPreferNativeTransport(true);
+    Vertx vertx = Vertx.vertx(options);
+
+    System.out.println("Vertx is using native transport: " + vertx.isNativeTransportEnabled());
     vertx.createHttpServer().requestHandler(req -> {
       req.response()
         .putHeader("content-type", "text/plain")

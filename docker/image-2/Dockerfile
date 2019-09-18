@@ -19,7 +19,6 @@ RUN jlink \
     --no-man-pages \
     --output "$JAVA_MINIMAL"
 
-# Second stage, add only our minimal "JRE" distr and our app
 FROM alpine
 
 ENV JAVA_MINIMAL=/opt/jre
