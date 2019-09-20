@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kube-test-deployment
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: kube-test-pod
+  template:
+    metadata:
+      labels:
+        app: kube-test-pod
+    spec:
+      containers:
+        - name: kube-test-app
+          image: larskj/kube-test-2:v2
+          ports:
+            - containerPort: 8888
