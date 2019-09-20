@@ -17,3 +17,8 @@ spec:
           image: larskj/kube-test-2:v2
           ports:
             - containerPort: 8888
+              name: api
+            - containerPort: 8889
+              name: monitoring
+
+

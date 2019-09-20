@@ -13,11 +13,9 @@ public class Main {
     Vertx vertx = Vertx.vertx(options);
 
     System.out.println("Vertx is using native transport: " + vertx.isNativeTransportEnabled());
-    vertx.createHttpServer().requestHandler(req -> {
-      req.response()
-        .putHeader("content-type", "text/plain")
-        .end("Service on host:" + getHostName());
-    }).listen(8888, http -> {
+    vertx.createHttpServer().requestHandler(req -> req.response()
+      .putHeader("content-type", "text/plain")
+      .end("Service on host:" + getHostName())).listen(8888, http -> {
       if (http.succeeded()) {
         System.out.println("HTTP server started on port 8888");
       } else {
@@ -25,11 +23,9 @@ public class Main {
       }
     });
 
-    vertx.createHttpServer().requestHandler(req -> {
-      req.response()
-        .putHeader("content-type", "text/plain")
-        .end("Status on host: " + getHostName());
-    }).listen(8889, http -> {
+    vertx.createHttpServer().requestHandler(req -> req.response()
+      .putHeader("content-type", "text/plain")
+      .end("Status on host: " + getHostName())).listen(8889, http -> {
       if (http.succeeded()) {
         System.out.println("HTTP server started on port 8888");
       } else {

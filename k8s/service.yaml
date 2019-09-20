@@ -7,6 +7,11 @@ spec:
     app: kube-test-pod
   ports:
     - port: 8080
+      name: api
       protocol: TCP
-      targetPort: 8888
+      targetPort: api
+    - port: 8081
+      name: monitoring
+      protocol: TCP
+      targetPort: monitoring
   type: ClusterIP
