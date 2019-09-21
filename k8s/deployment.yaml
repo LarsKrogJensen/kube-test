@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kube-test-deployment
+  name: kube-test
 spec:
   replicas: 3
   selector:
