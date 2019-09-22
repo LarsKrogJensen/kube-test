@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: xfe
 spec:
-  replicas: 1
+  replicas: 2
   selector:
     matchLabels:
       app: xfe-pod
@@ -14,9 +14,11 @@ spec:
     spec:
       containers:
         - name: xfe-app
-          image: larskj/xfe:v7
+          image: larskj/xfe:v8
           imagePullPolicy: IfNotPresent
           ports:
+            - containerPort: 8887
+              name: net
             - containerPort: 8888
               name: api
             - containerPort: 8889

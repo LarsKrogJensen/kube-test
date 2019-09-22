@@ -27,6 +27,8 @@ ENV PATH="$PATH:$JAVA_MINIMAL/bin"
 COPY --from=packager "$JAVA_MINIMAL" "$JAVA_MINIMAL"
 
 COPY xfe/target/xfe-1.0.0-SNAPSHOT-fat.jar /opt/app/xfe.jar
+EXPOSE 8887
 EXPOSE 8888
+EXPOSE 8889
 CMD ["java", "-jar", "/opt/app/xfe.jar"]
 

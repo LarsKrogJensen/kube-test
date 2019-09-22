@@ -1,10 +1,10 @@
 package se.lars.xfe;
 
 import io.vertx.core.AsyncResult;
-import io.vertx.core.Handler;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpServer;
+import io.vertx.core.net.NetServer;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
@@ -22,8 +22,13 @@ public class Main {
     Vertx vertx = Vertx.vertx(options);
 
     System.out.println("Vertx is using native transport: " + vertx.isNativeTransportEnabled());
-    vertx.createHttpServer().requestHandler(apiRouter(vertx)).listen(8888, listenHandler());
-    vertx.createHttpServer().requestHandler(monitoringRouter(vertx)).listen(8889, listenHandler());
+    System.out.println("Cores: " + Runtime.getRuntime().availableProcessors());
+    vertx.createHttpServer().requestHandler(apiRouter(vertx)).listen(8888, Main::httpListenHandler);
+    vertx.createHttpServer().requestHandler(monitoringRouter(vertx)).listen(8889, Main::httpListenHandler);
+    vertx.createNetServer().connectHandler(socket -> socket.handler(buffer -> {
+      System.out.println("Echoing: " + buffer.toString());
+      socket.write(buffer);
+    })).listen(8887, Main::netListenHandler);
   }
 
   private static Router monitoringRouter(Vertx vertx) {
@@ -60,14 +65,20 @@ public class Main {
     rc.next();
   }
 
-  private static Handler<AsyncResult<HttpServer>> listenHandler() {
-    return http -> {
-      if (http.succeeded()) {
-        System.out.println("HTTP server started on port " + http.result().actualPort());
-      } else {
-        System.out.println("Failed to start");
-      }
-    };
+  private static void httpListenHandler(AsyncResult<HttpServer> http) {
+    if (http.succeeded()) {
+      System.out.println("HTTP server started on port " + http.result().actualPort());
+    } else {
+      System.out.println("Failed to start");
+    }
+  }
+
+  private static void netListenHandler(AsyncResult<NetServer> server) {
+    if (server.succeeded()) {
+      System.out.println("Server started on port " + server.result().actualPort());
+    } else {
+      System.out.println("Failed to start");
+    }
   }
 
 

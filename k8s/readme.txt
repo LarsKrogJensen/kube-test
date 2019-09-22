@@ -21,8 +21,8 @@ local docker registry
 local docker registry in minikube failed!!!
 
 rolling updates
-pod probes   https://medium.com/@dstrimble/kubernetes-horizontal-pod-autoscaling-for-local-development-d211e52c309c
-autoscaler HPA  https://medium.com/@dstrimble/kubernetes-horizontal-pod-autoscaling-for-local-development-d211e52c309c
+OK pod probes   https://medium.com/@dstrimble/kubernetes-horizontal-pod-autoscaling-for-local-development-d211e52c309c
+OK autoscaler HPA  https://medium.com/@dstrimble/kubernetes-horizontal-pod-autoscaling-for-local-development-d211e52c309c
 service discovery
 hazelcast in pod
 ingress TCP traffic

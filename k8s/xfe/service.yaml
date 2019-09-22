@@ -14,4 +14,8 @@ spec:
       name: monitoring
       protocol: TCP
       targetPort: monitoring
+    - port: 8082
+      name: net
+      protocol: TCP
+      targetPort: net
   type: ClusterIP
