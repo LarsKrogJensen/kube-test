@@ -25,5 +25,5 @@ OK pod probes   https://medium.com/@dstrimble/kubernetes-horizontal-pod-autoscal
 OK autoscaler HPA  https://medium.com/@dstrimble/kubernetes-horizontal-pod-autoscaling-for-local-development-d211e52c309c
 service discovery
 hazelcast in pod
-ingress TCP traffic
+OK ingress TCP traffic service as NodePort cause ingress does not support tcp/udp
 
