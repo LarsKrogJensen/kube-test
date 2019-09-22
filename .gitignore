@@ -1,3 +1,5 @@
 # Project exclude paths
 /target/
 .idea
+/xfe/target/
+/xbe/target/
