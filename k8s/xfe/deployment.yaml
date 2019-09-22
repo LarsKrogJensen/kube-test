@@ -1,20 +1,21 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: kube-test
+  name: xfe
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: kube-test-pod
+      app: xfe-pod
   template:
     metadata:
       labels:
-        app: kube-test-pod
+        app: xfe-pod
     spec:
       containers:
-        - name: kube-test-app
-          image: larskj/kube-test-2:v2
+        - name: xfe-app
+          image: larskj/xfe:v4
+          imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8888
               name: api

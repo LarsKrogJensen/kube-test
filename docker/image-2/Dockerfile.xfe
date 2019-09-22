@@ -26,7 +26,7 @@ ENV PATH="$PATH:$JAVA_MINIMAL/bin"
 
 COPY --from=packager "$JAVA_MINIMAL" "$JAVA_MINIMAL"
 
-COPY target/kube-test-1.0.0-SNAPSHOT-fat.jar /opt/app/kube-test.jar
+COPY xfe/target/xfe-1.0.0-SNAPSHOT-fat.jar /opt/app/xfe.jar
 EXPOSE 8888
-CMD ["java", "-jar", "/opt/app/kube-test.jar"]
+CMD ["java", "-jar", "/opt/app/xfe.jar"]
 

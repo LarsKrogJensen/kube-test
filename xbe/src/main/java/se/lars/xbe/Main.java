@@ -1,4 +1,4 @@
-package se.lars.kube_test;
+package se.lars.xbe;
 
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -15,7 +15,7 @@ public class Main {
     System.out.println("Vertx is using native transport: " + vertx.isNativeTransportEnabled());
     vertx.createHttpServer().requestHandler(req -> req.response()
       .putHeader("content-type", "text/plain")
-      .end("Service on host:" + getHostName())).listen(8888, http -> {
+      .end("XBE service on host:" + getHostName())).listen(8888, http -> {
       if (http.succeeded()) {
         System.out.println("HTTP server started on port 8888");
       } else {
@@ -25,7 +25,7 @@ public class Main {
 
     vertx.createHttpServer().requestHandler(req -> req.response()
       .putHeader("content-type", "text/plain")
-      .end("Status on host: " + getHostName())).listen(8889, http -> {
+      .end("XBE status on host: " + getHostName())).listen(8889, http -> {
       if (http.succeeded()) {
         System.out.println("HTTP server started on port 8888");
       } else {

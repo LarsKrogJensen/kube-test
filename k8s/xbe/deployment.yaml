@@ -1,0 +1,24 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: xbe
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: xbe-pod
+  template:
+    metadata:
+      labels:
+        app: xbe-pod
+    spec:
+      containers:
+        - name: xbe-app
+          image: larskj/xbe:v1
+          ports:
+            - containerPort: 9888
+              name: api
+            - containerPort: 9889
+              name: monitoring
+
+
