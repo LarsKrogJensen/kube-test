@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: xfe
 spec:
-  replicas: 3
+  replicas: 1
   selector:
     matchLabels:
       app: xfe-pod
@@ -14,12 +14,25 @@ spec:
     spec:
       containers:
         - name: xfe-app
-          image: larskj/xfe:v4
+          image: larskj/xfe:v7
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8888
               name: api
             - containerPort: 8889
               name: monitoring
-
+          resources:
+            requests:
+              cpu: 200m
+          livenessProbe:
+            httpGet:
+              path: /health
+              port: monitoring
+            timeoutSeconds: 5
+            initialDelaySeconds: 20
+          readinessProbe:
+            httpGet:
+              path: /health
+              port: monitoring
+            timeoutSeconds: 5
 

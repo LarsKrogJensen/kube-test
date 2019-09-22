@@ -6,9 +6,14 @@ import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
+import io.vertx.ext.web.RoutingContext;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
+import java.util.stream.IntStream;
+
+import static io.netty.handler.codec.http.HttpHeaderValues.TEXT_PLAIN;
+import static io.vertx.core.http.HttpHeaders.CONTENT_TYPE;
 
 public class Main {
 
@@ -23,29 +28,36 @@ public class Main {
 
   private static Router monitoringRouter(Vertx vertx) {
     Router router = Router.router(vertx);
-    router.route("/health").handler(rc -> rc.response()
-      .putHeader("content-type", "text/plain")
-      .end("OK"));
-    router.route("/*").handler(req -> req.response()
-      .putHeader("content-type", "text/plain")
-      .end("Status on host: " + getHostName()));
+    router.route("/*").handler(Main::logRequest);
+    router.route("/health").handler(rc -> rc.response().putHeader(CONTENT_TYPE, TEXT_PLAIN).end("OK"));
+    router.route("/*").handler(req -> req.response().putHeader(CONTENT_TYPE, TEXT_PLAIN).end("Status on host: " + getHostName()));
 
     return router;
   }
 
   private static Router apiRouter(Vertx vertx) {
     Router router = Router.router(vertx);
+    router.route("/*").handler(Main::logRequest);
     router.route("/stop").handler(rc -> {
       vertx.setTimer(1000, __ -> System.exit(77));
-      rc.response()
-        .putHeader("content-type", "text/plain")
-        .end("OK");
+      rc.response().putHeader(CONTENT_TYPE, TEXT_PLAIN).end("OK");
     });
-    router.route("/*").handler(req -> req.response()
-      .putHeader("content-type", "text/plain")
-      .end("API on host: " + getHostName()));
+    router.route("/spin").handler(rc -> {
+      vertx.executeBlocking(promise -> {
+        IntStream.range(0, 1000).forEach(__ -> spin(500));
+        promise.complete();
+      }, result -> {
+        rc.response().putHeader(CONTENT_TYPE, TEXT_PLAIN).end("OK");
+      });
+    });
+    router.route("/*").handler(req -> req.response().putHeader(CONTENT_TYPE, TEXT_PLAIN).end("API on host: " + getHostName()));
 
     return router;
+  }
+
+  private static void logRequest(RoutingContext rc) {
+    System.out.println("Request: " + rc.request().path());
+    rc.next();
   }
 
   private static Handler<AsyncResult<HttpServer>> listenHandler() {
@@ -67,4 +79,10 @@ public class Main {
     }
   }
 
+  private static void spin(int milliseconds) {
+    long sleepTime = milliseconds * 1000000L; // convert to nanoseconds
+    long startTime = System.nanoTime();
+    while ((System.nanoTime() - startTime) < sleepTime) {
+    }
+  }
 }

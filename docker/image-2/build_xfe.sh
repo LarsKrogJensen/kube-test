@@ -1,5 +1,5 @@
 #!/bin/sh
-docker build -f ./Dockerfile.xfe -t larskj/xfe:v4 ../..
+docker build -f ./Dockerfile.xfe -t larskj/xfe:v7 ../..
 
-docker push larskj/xfe:v4
+docker push larskj/xfe:v7
 # image size 46 MB
