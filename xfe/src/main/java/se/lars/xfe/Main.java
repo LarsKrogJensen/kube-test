@@ -9,20 +9,28 @@ import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
 
 import java.net.InetAddress;
+import java.net.NetworkInterface;
+import java.net.SocketException;
 import java.net.UnknownHostException;
+import java.util.Collections;
+import java.util.Enumeration;
 import java.util.stream.IntStream;
 
 import static io.netty.handler.codec.http.HttpHeaderValues.TEXT_PLAIN;
 import static io.vertx.core.http.HttpHeaders.CONTENT_TYPE;
+import static java.lang.System.out;
+import static java.net.NetworkInterface.getNetworkInterfaces;
 
 public class Main {
 
-  public static void main(String[] args) {
+  public static void main(String[] args) throws SocketException {
     VertxOptions options = new VertxOptions().setPreferNativeTransport(true);
     Vertx vertx = Vertx.vertx(options);
 
     System.out.println("Vertx is using native transport: " + vertx.isNativeTransportEnabled());
     System.out.println("Cores: " + Runtime.getRuntime().availableProcessors());
+    displayMemory();
+    displayNics();
     vertx.createHttpServer().requestHandler(apiRouter(vertx)).listen(8888, Main::httpListenHandler);
     vertx.createHttpServer().requestHandler(monitoringRouter(vertx)).listen(8889, Main::httpListenHandler);
     vertx.createNetServer().connectHandler(socket -> socket.handler(buffer -> {
@@ -96,4 +104,35 @@ public class Main {
     while ((System.nanoTime() - startTime) < sleepTime) {
     }
   }
+
+  private static void displayMemory() {
+    int mb = 1024 * 1024;
+
+    //Getting the runtime reference from system
+    Runtime runtime = Runtime.getRuntime();
+
+    System.out.println("##### Heap utilization statistics [MB] #####");
+
+    System.out.println("Used Memory:" + (runtime.totalMemory() - runtime.freeMemory()) / mb + " MB");
+    System.out.println("Free Memory:" + runtime.freeMemory() / mb + " MB");
+    System.out.println("Total Memory:" + runtime.totalMemory() / mb + " MB");
+    System.out.println("Max Memory:" + runtime.maxMemory() / mb + " MB");
+  }
+
+  private static void displayNics() throws SocketException {
+    for (NetworkInterface netint : Collections.list(getNetworkInterfaces())) {
+      out.printf("Display name: %s\n", netint.getDisplayName());
+      out.printf("  Name: %s\n", netint.getName());
+      out.printf("  Virtual: %s\n", netint.isVirtual());
+      out.printf("  Up: %s\n", netint.isUp());
+      Enumeration<InetAddress> inetAddresses = netint.getInetAddresses();
+      for (InetAddress inetAddress : Collections.list(inetAddresses)) {
+        out.printf("  InetAddress: %s\n", inetAddress);
+        out.printf("    Hostname: %s\n", inetAddress.getHostName());
+        out.printf("    Loopback: %s\n", inetAddress.isLoopbackAddress());
+      }
+      out.print("\n");
+    }
+  }
+
 }

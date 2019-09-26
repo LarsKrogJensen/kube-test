@@ -15,6 +15,10 @@ docker tag larskj/xfe:v3 localhost:5000/larskj/xfe:v3
 docker push localhost:5000/larskj/xfe:v3
 
 
+java mem on container
+https://medium.com/adorsys/jvm-memory-settings-in-a-container-environment-64b0840e1d9e
+java -XX:+PrintFlagsFinal -version | grep -Ei "maxheapsize|maxram"
+
 
 ## explore
 local docker registry

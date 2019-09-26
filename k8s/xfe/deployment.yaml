@@ -3,7 +3,7 @@ kind: Deployment
 metadata:
   name: xfe
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: xfe-pod
@@ -12,9 +12,13 @@ spec:
       labels:
         app: xfe-pod
     spec:
+      volumes:
+        - name: xfe-configmap-volume
+          configMap:
+            name: xfe-configmap
       containers:
         - name: xfe-app
-          image: larskj/xfe:v8
+          image: larskj/xfe:v11
           imagePullPolicy: IfNotPresent
           ports:
             - containerPort: 8887
@@ -23,9 +27,21 @@ spec:
               name: api
             - containerPort: 8889
               name: monitoring
+          env:
+            - name: arne
+              value: anka
+            - name: pelle
+              value: fant
+          volumeMounts:
+            - name: xfe-configmap-volume
+              mountPath: /etc/config
           resources:
             requests:
               cpu: 200m
+              memory: 256Mi
+            limits:
+              cpu: 200m
+              memory: 256Mi
           livenessProbe:
             httpGet:
               path: /health
