@@ -1,5 +1,9 @@
-FROM openjdk:11-jre-slim
+#FROM openjdk:11-jre-slim
+FROM adoptopenjdk/openjdk12-openj9:alpine-slim
+
 RUN mkdir /opt/app
-COPY target/kube-test-1.0.0-SNAPSHOT-fat.jar /opt/app/kube-test.jar
+COPY xfe/target/xfe-1.0.0-SNAPSHOT-fat.jar /opt/app/xfe.jar
+EXPOSE 8887
 EXPOSE 8888
-CMD ["java", "-jar", "/opt/app/kube-test.jar"]
+EXPOSE 8889
+CMD ["java", "-XX:MaxRAMPercentage=75", "-jar", "/opt/app/xfe.jar"]

@@ -20,6 +20,24 @@ https://medium.com/adorsys/jvm-memory-settings-in-a-container-environment-64b084
 java -XX:+PrintFlagsFinal -version | grep -Ei "maxheapsize|maxram"
 
 
+docker registry
+curl -X GET http://localhost:5000/v2/_catalog
+curl -X GET http://localhost:5000/v2/xfe/tags/list
+
+docker-ls tags larskj/xfe -r http://localhost:5000
+docker-ls repositories -r http://localhost:5000
+
+# intermedeiate images
+docker images -f “dangling=true" -q
+clean
+docker rmi $(docker images --filter "dangling=true" -q)
+
+
+tag after build
+docker tag larskj/xfe:v11 localhost:5000/xfe:v11
+docker push localhost:5000/xfe:v11
+
+
 ## explore
 local docker registry
 local docker registry in minikube failed!!!

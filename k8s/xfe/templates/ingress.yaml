@@ -1,7 +1,7 @@
 apiVersion: networking.k8s.io/v1beta1 # for versions before 1.14 use extensions/v1beta1
 kind: Ingress
 metadata:
-  name: xfe-ingress
+  name: {{.Release.Name}}-ingress
   annotations:
     nginx.ingress.kubernetes.io/rewrite-target: /$2
 spec:
@@ -10,9 +10,9 @@ spec:
         paths:
           - path: /api(/|$)(.*)
             backend:
-              serviceName: xfe-service
+              serviceName: {{.Release.Name}}-service
               servicePort: 8080
           - path: /monitoring(/|$)(.*)
             backend:
-              serviceName: xfe-service
+              serviceName: {{.Release.Name}}-service
               servicePort: 8081

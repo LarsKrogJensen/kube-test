@@ -1,25 +1,25 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: xfe
+  name: {{.Release.Name}}
 spec:
-  replicas: 1
+  replicas: {{.Values.replicaCount}}
   selector:
     matchLabels:
-      app: xfe-pod
+      app: {{.Release.Name}}-pod
   template:
     metadata:
       labels:
-        app: xfe-pod
+        app: {{.Release.Name}}-pod
     spec:
       volumes:
-        - name: xfe-configmap-volume
+        - name: {{.Release.Name}}-configmap-volume
           configMap:
-            name: xfe-configmap
+            name: {{.Release.Name}}-configmap
       containers:
-        - name: xfe-app
-          image: larskj/xfe:v11
-          imagePullPolicy: IfNotPresent
+        - name: {{.Release.Name}}-app
+          image: larskj/xfe:v13
+          imagePullPolicy: Never
           ports:
             - containerPort: 8887
               name: net
@@ -33,15 +33,15 @@ spec:
             - name: pelle
               value: fant
           volumeMounts:
-            - name: xfe-configmap-volume
+            - name: {{.Release.Name}}-configmap-volume
               mountPath: /etc/config
           resources:
             requests:
-              cpu: 200m
-              memory: 256Mi
+              cpu: {{.Values.resources.requests.cpu}}
+              memory: {{.Values.resources.requests.memory}}
             limits:
-              cpu: 200m
-              memory: 256Mi
+              cpu: {{.Values.resources.limits.cpu}}
+              memory: {{.Values.resources.limits.memory}}
           livenessProbe:
             httpGet:
               path: /health
