@@ -42,6 +42,12 @@ docker push localhost:5000/xfe:v11
 local docker registry
 local docker registry in minikube failed!!!
 
+port forward
+k port-forward svc/xfe1-service 9090:8080
+
+dns lookup inside cluster (exec into pod and execute)
+k exec -it xfe1-5c459b5f5-qw66j nslookup xfe1-service.default.svc.cluster.local
+
 rolling updates
 OK pod probes   https://medium.com/@dstrimble/kubernetes-horizontal-pod-autoscaling-for-local-development-d211e52c309c
 OK autoscaler HPA  https://medium.com/@dstrimble/kubernetes-horizontal-pod-autoscaling-for-local-development-d211e52c309c

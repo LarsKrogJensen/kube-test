@@ -11,6 +11,7 @@
   <modules>
     <module>xfe</module>
     <module>xbe</module>
+    <module>hcast</module>
   </modules>
 
   <properties>
