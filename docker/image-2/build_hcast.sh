@@ -1,6 +1,6 @@
-#!/bin/bash
-TAG=v1
-#eval "$(minikube docker-env)"
+#!/bin/sh
+TAG=v8
+eval "$(minikube docker-env)"
 docker build -f ./Dockerfile.hcast -t larskj/hcast:$TAG ../..
 #docker tag larskj/xfe:$TAG localhost:5000/larskj/xfe:$TAG
 #docker push localhost:5000/larskj/xfe:$TAG

@@ -1,0 +1,35 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{.Release.Name}}
+spec:
+  replicas: {{.Values.replicaCount}}
+  selector:
+    matchLabels:
+      app: {{.Release.Name}}-pod
+  template:
+    metadata:
+      labels:
+        app: {{.Release.Name}}-pod
+    spec:
+      containers:
+        - name: {{.Release.Name}}-app
+          image: {{.Values.image.repository}}
+          imagePullPolicy: {{.Values.image.pullPolicy}}
+          ports:
+            - containerPort: 5701
+              name: hazelcast
+            - containerPort: 8888
+              name: api
+            - containerPort: 8889
+              name: monitoring
+          env:
+            - name: disco_dns
+              value: {{.Release.Name}}-service-hazelcast.{{.Release.Namespace}}.svc.cluster.local
+          resources:
+            requests:
+              cpu: {{.Values.resources.requests.cpu}}
+              memory: {{.Values.resources.requests.memory}}
+            limits:
+              cpu: {{.Values.resources.limits.cpu}}
+              memory: {{.Values.resources.limits.memory}}

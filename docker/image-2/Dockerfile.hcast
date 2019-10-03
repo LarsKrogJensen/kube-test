@@ -1,34 +1,34 @@
-FROM azul/zulu-openjdk-alpine:11 as packager
-
-RUN { \
-        java --version ; \
-        echo "jlink version:" && \
-        jlink --version ; \
-    }
-
-ENV JAVA_MINIMAL=/opt/jre
+#FROM azul/zulu-openjdk-alpine:11 as packager
+#
+#RUN { \
+#        java --version ; \
+#        echo "jlink version:" && \
+#        jlink --version ; \
+#    }
+#
+#ENV JAVA_MINIMAL=/opt/jre
 
 # build modules distribution
-RUN jlink \
-    --verbose \
-    --add-modules \
-        java.base,java.management,java.logging,java.xml,java.naming,java.transaction.xa \
-    --compress 2 \
-    --strip-debug \
-    --no-header-files \
-    --no-man-pages \
-    --output "$JAVA_MINIMAL"
+#RUN jlink \
+#    --verbose \
+#    --add-modules \
+#        java.base,java.management,java.logging,java.xml,java.naming,java.transaction.xa,jdk.unsupported \
+#    --compress 2 \
+#    --strip-debug \
+#    --no-header-files \
+#    --no-man-pages \
+#    --output "$JAVA_MINIMAL"
 
-FROM alpine
+FROM adoptopenjdk/openjdk12-openj9:alpine-slim
 
-ENV JAVA_MINIMAL=/opt/jre
-ENV PATH="$PATH:$JAVA_MINIMAL/bin"
+#ENV JAVA_MINIMAL=/opt/jre
+#ENV PATH="$PATH:$JAVA_MINIMAL/bin"
 
-COPY --from=packager "$JAVA_MINIMAL" "$JAVA_MINIMAL"
+#COPY --from=packager "$JAVA_MINIMAL" "$JAVA_MINIMAL"
 
 COPY hcast/target/hcast-1.0.0-SNAPSHOT-fat.jar /opt/app/hcast.jar
 EXPOSE 8887
 EXPOSE 8888
 EXPOSE 8889
-CMD ["java", "-XX:MaxRAMPercentage=75", "-jar", "/opt/app/hcast.jar"]
 
+CMD ["java", "-XX:MaxRAMPercentage=75", "-jar", "/opt/app/hcast.jar"]

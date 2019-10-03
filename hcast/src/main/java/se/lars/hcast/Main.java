@@ -1,5 +1,7 @@
 package se.lars.hcast;
 
+import com.hazelcast.config.Config;
+import com.hazelcast.config.JoinConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.core.IAtomicLong;
@@ -25,7 +27,13 @@ public class Main {
       "vertx.logger-delegate-factory-class-name",
       "io.vertx.core.logging.SLF4JLogDelegateFactory"
     );
-    instance = Hazelcast.newHazelcastInstance();
+    String discoDns = System.getenv("disco_dns");
+    System.out.println("DISCO DNS: " + discoDns);
+    Config config = new Config();
+    JoinConfig join = config.getNetworkConfig().getJoin();
+    join.getMulticastConfig().setEnabled(discoDns == null);
+    join.getKubernetesConfig().setEnabled(discoDns != null).setProperty("service-dns", discoDns);
+    instance = Hazelcast.newHazelcastInstance(config);
 
     VertxOptions options = new VertxOptions().setPreferNativeTransport(true);
     Vertx vertx = Vertx.vertx(options);
