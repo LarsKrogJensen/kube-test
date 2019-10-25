@@ -18,4 +18,4 @@ spec:
       name: net
       protocol: TCP
       targetPort: net
-  type: ClusterIP
+  type: LoadBalancer

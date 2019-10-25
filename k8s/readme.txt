@@ -38,6 +38,9 @@ docker tag larskj/xfe:v11 localhost:5000/xfe:v11
 docker push localhost:5000/xfe:v11
 
 
+config map from file:
+k create configmap xbe-configmap --from-file arne.properties --dry-run --output yaml
+
 ## explore
 local docker registry
 local docker registry in minikube failed!!!
