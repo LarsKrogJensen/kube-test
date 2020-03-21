@@ -18,4 +18,4 @@ spec:
       name: hazelcast
       protocol: TCP
       targetPort: hazelcast
-  type: ClusterIP
+  type: LoadBalancer

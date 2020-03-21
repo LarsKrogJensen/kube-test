@@ -11,8 +11,10 @@ router.use((req, res, next) => {
   next();
 });
 
-router.get('/hello', async (req, res) => {
-  let response = await fetch("https://httpbin.org/get" )
+router.get("/hello", (req, res) => res.send("world"))
+
+router.get('/fetch', async (req, res) => {
+  let response = await fetch("https://httpbin.org/get")
   let data = await response.json()
   res.send(data);
 });

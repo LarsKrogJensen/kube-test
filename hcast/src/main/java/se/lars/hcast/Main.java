@@ -4,7 +4,7 @@ import com.hazelcast.config.Config;
 import com.hazelcast.config.JoinConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
-import com.hazelcast.core.IAtomicLong;
+import com.hazelcast.cp.IAtomicLong;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
@@ -22,7 +22,7 @@ public class Main {
 
   private static HazelcastInstance instance;
 
-  public static void main(String[] args) throws Exception {
+  public static void main(String[] args) {
     System.setProperty(
       "vertx.logger-delegate-factory-class-name",
       "io.vertx.core.logging.SLF4JLogDelegateFactory"
@@ -57,7 +57,7 @@ public class Main {
     Router router = Router.router(vertx);
     router.route("/*").handler(Main::logRequest);
     router.route("/*").handler(req -> {
-      IAtomicLong data = instance.getAtomicLong("data");
+      IAtomicLong data = instance.getCPSubsystem().getAtomicLong("data");
       req.response().putHeader(CONTENT_TYPE, TEXT_PLAIN).end("API on host: " + getHostName() + " - counter: " + data.getAndAdd(1));
     });
 

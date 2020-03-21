@@ -1,0 +1,22 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: hello
+  labels:
+    version: v2
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: hello-pod
+  template:
+    metadata:
+      labels:
+        app: hello-pod
+        version: v2
+    spec:
+      containers:
+        - name: hello-app
+          image: larskj/hello:v2
+          ports:
+            - containerPort: 8080
