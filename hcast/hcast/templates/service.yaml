@@ -1,10 +1,10 @@
 apiVersion: v1
 kind: Service
 metadata:
-  name: {{.Release.Name}}-service
+  name: {{.Values.name}}-{{.Release.Name}}-service
 spec:
   selector:
-    app: {{.Release.Name}}-pod
+    app: {{.Values.name}}-{{.Release.Name}}-pod
   ports:
     - port: 8080
       name: api
