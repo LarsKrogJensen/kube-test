@@ -23,16 +23,20 @@ spec:
               name: api
             - containerPort: 8889
               name: monitoring
+          volumeMounts:
+            - mountPath: /opt/app/config.yaml
+              name: {{.Values.name}}-{{.Release.Name}}-config-volume
+              subPath: config.yaml
           env:
             - name: disco_dns
               value: {{.Values.name}}-{{.Release.Name}}-service-hazelcast.{{.Release.Namespace}}.svc.cluster.local
-{{/*          resources:*/}}
-{{/*            requests:*/}}
-{{/*              cpu: {{.Values.resources.requests.cpu}}*/}}
-{{/*              memory: {{.Values.resources.requests.memory}}*/}}
-{{/*            limits:*/}}
-{{/*              cpu: {{.Values.resources.limits.cpu}}*/}}
-{{/*              memory: {{.Values.resources.limits.memory}}*/}}
+                      {{/*          resources:*/}}
+                      {{/*            requests:*/}}
+                      {{/*              cpu: {{.Values.resources.requests.cpu}}*/}}
+                      {{/*              memory: {{.Values.resources.requests.memory}}*/}}
+                      {{/*            limits:*/}}
+                      {{/*              cpu: {{.Values.resources.limits.cpu}}*/}}
+                {{/*              memory: {{.Values.resources.limits.memory}}*/}}
           livenessProbe:
             httpGet:
               path: /health
@@ -44,3 +48,7 @@ spec:
               path: /health
               port: monitoring
             timeoutSeconds: 5
+      volumes:
+        - name: {{.Values.name}}-{{.Release.Name}}-config-volume
+          configMap:
+            name: {{.Values.name}}-{{.Release.Name}}-config

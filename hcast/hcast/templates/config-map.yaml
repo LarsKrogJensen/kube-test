@@ -1,0 +1,11 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{.Values.name}}-{{.Release.Name}}-config
+  namespace: default
+data:
+  config.yaml: |
+    server:
+      port: 8080
+    monitoring:
+      port: 8081
