@@ -2,16 +2,16 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 4
+replicaCount: 2
 
 image:
-  repository: larskj/hcast:v12
+  repository: larskj/hcast:v13
   pullPolicy: Never
 
 resources:
    limits:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 500m
+    memory: 256Mi
    requests:
-    cpu: 100m
-    memory: 128Mi
+    cpu: 500m
+    memory: 256Mi

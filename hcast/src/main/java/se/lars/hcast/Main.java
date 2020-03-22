@@ -30,6 +30,7 @@ public class Main {
     String discoDns = System.getenv("disco_dns");
     System.out.println("DISCO DNS: " + discoDns);
     Config config = new Config();
+    config.setProperty("hazelcast.shutdownhook.policy", "GRACEFUL");
     JoinConfig join = config.getNetworkConfig().getJoin();
     join.getMulticastConfig().setEnabled(discoDns == null);
     join.getKubernetesConfig().setEnabled(discoDns != null).setProperty("service-dns", discoDns);

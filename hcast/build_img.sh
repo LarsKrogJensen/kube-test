@@ -1,5 +1,5 @@
 #!/bin/sh
-TAG=v12
+TAG=v13
 eval "$(minikube docker-env)"
 docker build -f ./Dockerfile -t larskj/hcast:$TAG .
 #docker tag larskj/xfe:$TAG localhost:5000/larskj/xfe:$TAG

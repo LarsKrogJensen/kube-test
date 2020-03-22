@@ -14,8 +14,4 @@ spec:
       name: monitoring
       protocol: TCP
       targetPort: monitoring
-    - port: 5701
-      name: hazelcast
-      protocol: TCP
-      targetPort: hazelcast
   type: LoadBalancer
