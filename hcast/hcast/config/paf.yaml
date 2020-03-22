@@ -1,0 +1,4 @@
+server:
+  port: 9080
+monitoring:
+  port: 9081
