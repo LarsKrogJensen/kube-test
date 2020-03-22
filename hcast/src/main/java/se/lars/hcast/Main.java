@@ -5,12 +5,16 @@ import com.hazelcast.config.JoinConfig;
 import com.hazelcast.core.Hazelcast;
 import com.hazelcast.core.HazelcastInstance;
 import com.hazelcast.cp.IAtomicLong;
+import io.micrometer.prometheus.PrometheusMeterRegistry;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Vertx;
 import io.vertx.core.VertxOptions;
 import io.vertx.core.http.HttpServer;
 import io.vertx.ext.web.Router;
 import io.vertx.ext.web.RoutingContext;
+import io.vertx.micrometer.MicrometerMetricsOptions;
+import io.vertx.micrometer.VertxPrometheusOptions;
+import io.vertx.micrometer.backends.BackendRegistries;
 
 import java.net.InetAddress;
 import java.net.UnknownHostException;
@@ -36,7 +40,14 @@ public class Main {
     join.getKubernetesConfig().setEnabled(discoDns != null).setProperty("service-dns", discoDns);
     instance = Hazelcast.newHazelcastInstance(config);
 
-    VertxOptions options = new VertxOptions().setPreferNativeTransport(true);
+    MicrometerMetricsOptions metricsOptions = new MicrometerMetricsOptions()
+      .setJvmMetricsEnabled(true)
+      .setPrometheusOptions(new VertxPrometheusOptions().setEnabled(true))
+      .setEnabled(true);
+    VertxOptions options = new VertxOptions()
+      .setMetricsOptions(metricsOptions)
+      .setPreferNativeTransport(true);
+
     Vertx vertx = Vertx.vertx(options);
 
     System.out.println("Vertx is using native transport: " + vertx.isNativeTransportEnabled());
@@ -49,6 +60,7 @@ public class Main {
     Router router = Router.router(vertx);
     router.route("/*").handler(Main::logRequest);
     router.route("/health").handler(rc -> rc.response().putHeader(CONTENT_TYPE, TEXT_PLAIN).end("OK"));
+    router.route("/metrics").handler(Main::metrics);
     router.route("/*").handler(req -> req.response().putHeader(CONTENT_TYPE, TEXT_PLAIN).end("Status on host: " + getHostName()));
 
     return router;
@@ -68,6 +80,11 @@ public class Main {
   private static void logRequest(RoutingContext rc) {
     System.out.println("Request: " + rc.request().path());
     rc.next();
+  }
+
+  private static void metrics(RoutingContext rc) {
+    PrometheusMeterRegistry registry = (PrometheusMeterRegistry) BackendRegistries.getDefaultNow();
+    rc.response().putHeader(CONTENT_TYPE, TEXT_PLAIN).end(registry.scrape());
   }
 
   private static String getHostName() {
