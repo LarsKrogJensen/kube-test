@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{.Values.name}}-{{.Release.Name}}
+  name: {{.Chart.Name}}-{{.Release.Name}}
 spec:
   replicas: {{.Values.replicaCount}}
   selector:
     matchLabels:
-      app: {{.Values.name}}-{{.Release.Name}}-pod
+      app: {{.Chart.Name}}-{{.Release.Name}}-pod
   template:
     metadata:
       labels:
-        app: {{.Values.name}}-{{.Release.Name}}-pod
+        app: {{.Chart.Name}}-{{.Release.Name}}-pod
     spec:
       containers:
-        - name: {{.Values.name}}-{{.Release.Name}}-app
+        - name: {{.Chart.Name}}-{{.Release.Name}}-app
           image: {{.Values.image.repository}}
           imagePullPolicy: {{.Values.image.pullPolicy}}
           ports:
@@ -25,18 +25,11 @@ spec:
               name: monitoring
           volumeMounts:
             - mountPath: /opt/app/config.yaml
-              name: {{.Values.name}}-{{.Release.Name}}-config-volume
+              name: {{.Chart.Name}}-{{.Release.Name}}-config-volume
               subPath: config.yaml
           env:
             - name: disco_dns
-              value: {{.Values.name}}-{{.Release.Name}}-service-hazelcast.{{.Release.Namespace}}.svc.cluster.local
-                      {{/*          resources:*/}}
-                      {{/*            requests:*/}}
-                      {{/*              cpu: {{.Values.resources.requests.cpu}}*/}}
-                      {{/*              memory: {{.Values.resources.requests.memory}}*/}}
-                      {{/*            limits:*/}}
-                      {{/*              cpu: {{.Values.resources.limits.cpu}}*/}}
-                {{/*              memory: {{.Values.resources.limits.memory}}*/}}
+              value: {{.Chart.Name}}-{{.Release.Name}}-service-hazelcast.{{.Release.Namespace}}.svc.cluster.local
           livenessProbe:
             httpGet:
               path: /health
@@ -49,6 +42,6 @@ spec:
               port: monitoring
             timeoutSeconds: 5
       volumes:
-        - name: {{.Values.name}}-{{.Release.Name}}-config-volume
+        - name: {{.Chart.Name}}-{{.Release.Name}}-config-volume
           configMap:
-            name: {{.Values.name}}-{{.Release.Name}}-config
+            name: {{.Chart.Name}}-{{.Release.Name}}-config
