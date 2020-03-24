@@ -23,6 +23,9 @@ spec:
               name: api
             - containerPort: 8889
               name: monitoring
+          resources:
+            requests:
+              cpu: "250m"
           volumeMounts:
             - mountPath: /opt/app/config.yaml
               name: {{.Chart.Name}}-{{.Release.Name}}-config-volume
