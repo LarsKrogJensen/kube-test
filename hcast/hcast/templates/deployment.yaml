@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: {{.Chart.Name}}-{{.Release.Name}}
+  name: {{.Chart.Name}}- {{- .Release.Name}}
 spec:
   replicas: {{.Values.replicaCount}}
   selector:
@@ -33,17 +33,24 @@ spec:
           env:
             - name: disco_dns
               value: {{.Chart.Name}}-{{.Release.Name}}-service-hazelcast.{{.Release.Namespace}}.svc.cluster.local
+          startupProbe:
+            httpGet:
+              path: /startupProbe
+              port: monitoring
+            failureThreshold: 30
+            periodSeconds: 5
+          readinessProbe:
+            httpGet:
+              path: /readinessProbe
+              port: monitoring
+            initialDelaySeconds: 5
+            periodSeconds: 10
           livenessProbe:
             httpGet:
               path: /health
               port: monitoring
-            timeoutSeconds: 5
-            initialDelaySeconds: 10
-          readinessProbe:
-            httpGet:
-              path: /health
-              port: monitoring
-            timeoutSeconds: 5
+            initialDelaySeconds: 5
+            periodSeconds: 10
       volumes:
         - name: {{.Chart.Name}}-{{.Release.Name}}-config-volume
           configMap:

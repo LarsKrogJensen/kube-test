@@ -25,6 +25,7 @@ import static io.vertx.core.http.HttpHeaders.CONTENT_TYPE;
 public class Main {
 
   private static HazelcastInstance instance;
+  private static final long startedAt = System.currentTimeMillis();
 
   public static void main(String[] args) {
     System.setProperty(
@@ -59,7 +60,9 @@ public class Main {
   private static Router monitoringRouter(Vertx vertx) {
     Router router = Router.router(vertx);
     router.route("/*").handler(Main::logRequest);
-    router.route("/health").handler(rc -> rc.response().putHeader(CONTENT_TYPE, TEXT_PLAIN).end("OK"));
+    router.route("/health").handler(Main::health);
+    router.route("/startupProbe").handler(Main::health);
+    router.route("/readinessProbe").handler(Main::health);
     router.route("/metrics").handler(Main::metrics);
     router.route("/*").handler(req -> req.response().putHeader(CONTENT_TYPE, TEXT_PLAIN).end("Status on host: " + getHostName()));
 
@@ -85,6 +88,15 @@ public class Main {
   private static void metrics(RoutingContext rc) {
     PrometheusMeterRegistry registry = (PrometheusMeterRegistry) BackendRegistries.getDefaultNow();
     rc.response().putHeader(CONTENT_TYPE, TEXT_PLAIN).end(registry.scrape());
+  }
+
+  private static void health(RoutingContext rc) {
+    if ((System.currentTimeMillis() - startedAt) > 30_000) {
+      rc.response().putHeader(CONTENT_TYPE, TEXT_PLAIN).end("OK");
+    } else {
+      System.out.println("Health not yet ok");
+      rc.response().setStatusCode(503).putHeader(CONTENT_TYPE, TEXT_PLAIN).end("KO");
+    }
   }
 
   private static String getHostName() {
